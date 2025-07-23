@@ -1,0 +1,42 @@
+version: '3'
+
+tasks:
+  run:
+    desc: "Iniciar o servidor FastAPI com reload"
+    cmds:
+      - uvicorn fast_zero.app:app --reload --port 8000
+
+  test:
+    desc: "Executar testes com pytest"
+    cmds:
+      - pytest tests/ -v --cov=fast_zero --cov-report=term-missing
+
+  lint:
+    desc: "Verificar estilo do código com flake8"
+    cmds:
+      - flake8 . --exclude=.venv,venv,migrations --max-line-length=120 --ignore=E203,E501,W503
+
+  format:
+    desc: "Formatar código Python com Black"
+    cmds:
+      - black . --exclude '/(\.venv|venv|migrations)/'
+
+  check:
+    desc: "Verificar formatação sem aplicar mudanças"
+    cmds:
+      - black . --check --diff --exclude '/(\.venv|venv|migrations)/'
+      - flake8 . --exclude=.venv,venv,migrations --max-line-length=120 --ignore=E203,E501,W503
+
+  all:
+    desc: "Executar todas as verificações (test, lint, format check)"
+    cmds:
+      - task: format
+      - task: lint
+      - task: test
+
+lint:
+  desc: "Verificar estilo do código"
+  cmds:
+    - flake8 .
+    - pylint fast_zero tests
+    - mypy fast_zero
