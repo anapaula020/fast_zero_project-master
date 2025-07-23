@@ -12,9 +12,11 @@ tasks:
       - pytest tests/ -v --cov=fast_zero --cov-report=term-missing
 
   lint:
-    desc: "Verificar estilo do código com flake8"
+    desc: "Verificar estilo do código com flake8, pylint e mypy"
     cmds:
       - flake8 . --exclude=.venv,venv,migrations --max-line-length=120 --ignore=E203,E501,W503
+      - pylint fast_zero tests || true
+      - mypy fast_zero || true
 
   format:
     desc: "Formatar código Python com Black"
@@ -33,10 +35,3 @@ tasks:
       - task: format
       - task: lint
       - task: test
-
-lint:
-  desc: "Verificar estilo do código"
-  cmds:
-    - flake8 .
-    - pylint fast_zero tests
-    - mypy fast_zero
