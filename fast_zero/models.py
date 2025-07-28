@@ -1,20 +1,18 @@
-from datetime import datetime
-
-from sqlalchemy import func
-from sqlalchemy.orm import Mapped, mapped_column, registry
-
-table_registry = registry()
+from sqlalchemy import Column, Integer, String, DateTime, func
+from fast_zero.database import Base
 
 
-@table_registry.mapped_as_dataclass
-class User:
-    __tablename__ = 'users'
+class Item(Base):
+    __tablename__ = "items"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
 
-    id: Mapped[int] = mapped_column(init=False, primary_key=True)
-    username: Mapped[str] = mapped_column(unique=True)
-    password: Mapped[str]
-    email: Mapped[str] = mapped_column(unique=True)
-    created_at: Mapped[datetime] = mapped_column(
-        init=False,
-        server_default=func.now(),
-    )
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    password = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -1,22 +1,46 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
+from typing import Optional
 
 
-class Message(BaseModel):
-    message: str
-
-
-class UserSchema(BaseModel):
-    username: str
-    email: EmailStr
-    password: str
-
-
-class UserPublic(BaseModel):
+class UserRead(BaseModel):
     id: int
     username: str
-    email: EmailStr
+
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserList(BaseModel):
-    users: list[UserPublic]
+class ItemSchema(BaseModel):
+    id: int
+    name: str
+    description: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserBase(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: Optional[str] = None
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserPublic(UserBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+class FilterPage(BaseModel):
+    offset: int = 0
+    limit: int = 100
